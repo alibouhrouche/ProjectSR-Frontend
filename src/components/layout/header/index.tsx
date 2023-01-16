@@ -21,6 +21,7 @@ export const Header: React.FC = () => {
         alignItems: "center",
         padding: "0px 24px",
         height: "64px",
+        color: "#fff"
       }}
     >
       <Switch
@@ -28,10 +29,15 @@ export const Header: React.FC = () => {
         unCheckedChildren="🔆"
         onChange={() => setMode(mode === "light" ? "dark" : "light")}
         defaultChecked={mode === "dark"}
+        style={{
+          background: mode === "light" ? "#f5f5f5" : "#000000"
+        }}
       />
       <div style={{ marginLeft: "8px", display: 'flex', alignItems: 'center', gap: '10px' }}>
         {user?.name && (
-          <Text ellipsis strong>
+          <Text ellipsis strong style={{
+            color: "#fff"
+          }}>
             {user.name}
           </Text>
         )}

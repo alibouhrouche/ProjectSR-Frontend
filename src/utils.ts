@@ -9,8 +9,14 @@ export async function sendJSON<T>(url:string,data:any):Promise<T> {
         },
         body: JSON.stringify(data),
     })
-    if(!res.ok) throw new Error("Failed Request");
-    return await res.json()
+    const ret = await res.json();
+    if(!res.ok){
+        if(ret.message)
+            throw new Error(ret.message)
+        else
+            throw new Error("Unknown Error")
+    } 
+    return ret
 }
 
 export async function getJSON<T>(url:string):Promise<T> {

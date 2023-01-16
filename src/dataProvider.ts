@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import type { BaseKey, DataProvider, HttpError, MetaDataQuery } from "@pankod/refine-core";
 import { TOKEN_KEY } from "authProvider";
+import { CarnetCreate, MessageCreate, SportData, TerrainData, UserCreate } from "interfaces";
 
 const axiosInstance = axios.create();
 
@@ -13,7 +14,7 @@ const route:Record<string,string> = {
     "carnets": "admin/carnet",
 }
 
-const createMessage = async (apiurl:string,data:any) => await axiosInstance.post(`${apiurl}/client/messages`,data.message,{
+const createMessage = async (apiurl:string,data:MessageCreate) => await axiosInstance.post(`${apiurl}/client/messages`,data.message,{
     headers: {
         'Content-Type': 'text/plain',
     },
@@ -22,10 +23,10 @@ const createMessage = async (apiurl:string,data:any) => await axiosInstance.post
 const creator:Record<string,(apiurl:string,data:any)=>Promise<AxiosResponse<any,any>>> = {
     "messages": createMessage,
     "mymessages": createMessage,
-    "terrain": async (apiurl,data)=>await axiosInstance.post(`${apiurl}/admin/terrain/save`,data),
-    "sports": async (apiurl,data)=>await axiosInstance.post(`${apiurl}/admin/sport/save`,data),
-    "carnets": async (apiurl,data)=>await axiosInstance.post(`${apiurl}/admin/carnet`,data),
-    "users": async (apiurl,data)=>await axiosInstance.post(`${apiurl}/auth/register/${data.role === "ADMIN"?"false":"true"}`,data),
+    "terrain": async (apiurl,data:TerrainData)=>await axiosInstance.post(`${apiurl}/admin/terrain/save`,data),
+    "sports": async (apiurl,data:SportData)=>await axiosInstance.post(`${apiurl}/admin/sport/save`,data),
+    "carnets": async (apiurl,data:CarnetCreate)=>await axiosInstance.post(`${apiurl}/admin/carnet`,data),
+    "users": async (apiurl,data:UserCreate)=>await axiosInstance.post(`${apiurl}/auth/register/${data.role === "ADMIN"?"false":"true"}`,data),
 }
 
 const updator:Record<string,(apiurl:string,data:any,id:BaseKey,metaData?:MetaDataQuery)=>Promise<AxiosResponse<any,any>>> = {

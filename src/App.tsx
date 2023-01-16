@@ -1,11 +1,10 @@
 import { Refine } from "@pankod/refine-core";
 import {
   notificationProvider,
-  ErrorComponent,
-  AuthPage,
 } from "@pankod/refine-antd";
+import { ErrorComponent } from "components/pages/error";
 import "@pankod/refine-antd/dist/reset.css";
-
+import { AuthPage } from "components/pages/auth";
 import routerProvider, {HashRouterComponent} from "@pankod/refine-react-router-v6";
 import { ColorModeContextProvider } from "contexts";
 import {
@@ -95,10 +94,21 @@ function App() {
         OffLayoutArea={OffLayoutArea}
         routerProvider={{
           ...routerProvider,
-          RouterComponent: HashRouterComponent
+          RouterComponent: HashRouterComponent,
+          routes: [
+              {
+                  path: "/register",
+                  element: <AuthPage type="register" />,
+              },
+          ],
         }}
         authProvider={authProvider}
-        LoginPage={AuthPage}
+        LoginPage={() => (
+          <AuthPage
+            rememberMe={false}
+            forgotPasswordLink={false}
+          />
+        )}
       />
     </ColorModeContextProvider>
   );
