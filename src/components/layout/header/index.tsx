@@ -2,13 +2,11 @@ import { useContext } from "react";
 import { useGetIdentity } from "@pankod/refine-core";
 import {
   AntdLayout,
-  Space,
   Avatar,
   Typography,
   Switch,
 } from "@pankod/refine-antd";
 import { ColorModeContext } from "contexts";
-
 const { Text } = Typography;
 
 export const Header: React.FC = () => {
@@ -31,14 +29,14 @@ export const Header: React.FC = () => {
         onChange={() => setMode(mode === "light" ? "dark" : "light")}
         defaultChecked={mode === "dark"}
       />
-      <Space style={{ marginLeft: "8px" }}>
+      <div style={{ marginLeft: "8px", display: 'flex', alignItems: 'center', gap: '10px' }}>
         {user?.name && (
           <Text ellipsis strong>
             {user.name}
           </Text>
         )}
-        {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} />}
-      </Space>
+        {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} /> }
+      </div>
     </AntdLayout.Header>
   );
 };
