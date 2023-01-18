@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useGetIdentity } from "@pankod/refine-core";
+import { useGetIdentity, useRouterContext } from "@pankod/refine-core";
 import {
   AntdLayout,
   Avatar,
@@ -12,7 +12,7 @@ const { Text } = Typography;
 export const Header: React.FC = () => {
   const { data: user } = useGetIdentity();
   const { mode, setMode } = useContext(ColorModeContext);
-
+  const { Link } = useRouterContext();
   return (
     <AntdLayout.Header
       style={{
@@ -33,16 +33,18 @@ export const Header: React.FC = () => {
           background: mode === "light" ? "#f5f5f5" : "#000000"
         }}
       />
-      <div style={{ marginLeft: "8px", display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {user?.name && (
-          <Text ellipsis strong style={{
-            color: "#fff"
-          }}>
-            {user.name}
-          </Text>
-        )}
-        {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} /> }
-      </div>
+      <Link to="/Profile">
+        <div style={{ marginLeft: "8px", display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {user?.name && (
+            <Text ellipsis strong style={{
+              color: "#fff"
+            }}>
+              {user.name}
+            </Text>
+          )}
+          {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} /> }
+        </div>
+      </Link>
     </AntdLayout.Header>
   );
 };

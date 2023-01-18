@@ -23,11 +23,14 @@ import { TerrainCreate, TerrainEdit, TerrainList, TerrainShow } from "components
 import defineAbilityFor from "accessControl";
 import { SportCreate, SportEdit, SportList, SportShow } from "components/layout/Sports";
 import { CarnetCreate, CarnetEdit, CarnetList, CarnetShow } from "components/layout/Carnet";
-import { UserCreate, UserList, UserShow } from "components/layout/User";
+import { UserCreate, UserEdit, UserList, UserShow } from "components/layout/User";
+import { RefineKbarProvider } from "@pankod/refine-kbar";
+import Profile from "components/view/Profile";
 
 function App() {  
   return (
     <ColorModeContextProvider>
+    <RefineKbarProvider>
       <Refine
         dataProvider={dataProvider(config.api_base)}
         notificationProvider={notificationProvider}
@@ -44,8 +47,9 @@ function App() {
             name: "Users",
             list: UserList,
             show: UserShow,
+            edit: UserEdit,
             create: UserCreate,
-            canDelete: false,
+            canDelete: true,
           },
           {
             name: "Messages",
@@ -84,8 +88,11 @@ function App() {
             show: CarnetShow,
             create: CarnetCreate,
             canDelete: true,
-          },
+          }
         ]}
+        options={{
+          warnWhenUnsavedChanges: true
+        }}
         Title={Title}
         Header={Header}
         Sider={Sider}
@@ -94,12 +101,17 @@ function App() {
         OffLayoutArea={OffLayoutArea}
         routerProvider={{
           ...routerProvider,
-          RouterComponent: HashRouterComponent,
+          // RouterComponent: HashRouterComponent,
           routes: [
               {
                   path: "/register",
                   element: <AuthPage type="register" />,
               },
+              {
+                  path: "/profile",
+                  element: <Profile />,
+                  layout: true
+              }
           ],
         }}
         authProvider={authProvider}
@@ -110,6 +122,7 @@ function App() {
           />
         )}
       />
+      </RefineKbarProvider>
     </ColorModeContextProvider>
   );
 }
