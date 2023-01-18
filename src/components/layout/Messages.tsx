@@ -14,20 +14,26 @@ import {
 export const MessageList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps } = useTable({
         syncWithLocation: true,
-        hasPagination: false
     });
 
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="Id" />
+                <Table.Column dataIndex="id" title="Id"
+                    sorter
+                />
                 <Table.Column
                     dataIndex={["dateEcriture"]}
                     title="Date Ecriture"
                     render={(value: any) => <DateField value={value} />}
+                    sorter
                 />
-                <Table.Column dataIndex="message" title="Message" />
-                <Table.Column dataIndex="From" title="From" />
+                <Table.Column dataIndex="message" title="Message"
+                    sorter
+                />
+                <Table.Column dataIndex="From" title="From"
+                    sorter
+                />
                 <Table.Column
                     title="Actions"
                     dataIndex="actions"

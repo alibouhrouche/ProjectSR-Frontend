@@ -17,35 +17,55 @@ import {
     Show,
     Typography,
     Edit,
+    DeleteButton,
+    EditButton,
+    FilterDropdown,
 } from "@pankod/refine-antd";
 
 export const UserList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps } = useTable({
         syncWithLocation: true,
-        hasPagination: false
     });
 
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="Id" />
+                <Table.Column dataIndex="id" title="Id"
+                    sorter
+                />
                 <Table.Column
                     dataIndex={["email"]}
                     title="Email"
                     render={(value: any) => <EmailField value={value} />}
+                    sorter
+                    filterDropdown={(props) => (
+                        <FilterDropdown {...props}>
+                            <Input />
+                        </FilterDropdown>
+                    )}
                 />
-                <Table.Column dataIndex="codePostal" title="Code Postal" />
-                <Table.Column dataIndex="rue" title="Rue" />
-                <Table.Column dataIndex="ville" title="Ville" />
-                <Table.Column dataIndex="nom" title="Nom" />
-                <Table.Column dataIndex="prenom" title="Prenom" />
-                <Table.Column dataIndex="role" title="Role" />
+                <Table.Column dataIndex="codePostal" title="Code Postal" sorter />
+                <Table.Column dataIndex="rue" title="Rue" sorter />
+                <Table.Column dataIndex="ville" title="Ville" sorter />
+                <Table.Column dataIndex="nom" title="Nom" sorter />
+                <Table.Column dataIndex="prenom" title="Prenom" sorter />
+                <Table.Column dataIndex="role" title="Role" sorter />
                 <Table.Column
                     title="Actions"
                     dataIndex="actions"
                     render={(_, record: BaseRecord) => (
                         <Space>
+                            <EditButton
+                                hideText
+                                size="small"
+                                recordItemId={record.id}
+                            />
                             <ShowButton
+                                hideText
+                                size="small"
+                                recordItemId={record.id}
+                            />
+                            <DeleteButton
                                 hideText
                                 size="small"
                                 recordItemId={record.id}
@@ -216,8 +236,8 @@ export const UserEdit: React.FC<IResourceComponentsProps> = () => {
                     <Input readOnly disabled />
                 </Form.Item>
                 <Form.Item
-                    label="Code Postal"
-                    name={["codePostal"]}
+                    label="Prenom"
+                    name={["prenom"]}
                     rules={[
                         {
                             required: true,
@@ -225,6 +245,34 @@ export const UserEdit: React.FC<IResourceComponentsProps> = () => {
                     ]}
                 >
                     <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Nom"
+                    name={["nom"]}
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Email"
+                    name={["email"]}
+                    rules={[
+                        {
+                            required: true,
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Password"
+                    name={["password"]}
+                >
+                    <Input.Password placeholder="(Unchanged)"/>
                 </Form.Item>
                 <Form.Item
                     label="Rue"
@@ -249,30 +297,8 @@ export const UserEdit: React.FC<IResourceComponentsProps> = () => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Email"
-                    name={["email"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Nom"
-                    name={["nom"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Prenom"
-                    name={["prenom"]}
+                    label="Code Postal"
+                    name={["codePostal"]}
                     rules={[
                         {
                             required: true,

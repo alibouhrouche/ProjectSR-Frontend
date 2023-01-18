@@ -17,17 +17,21 @@ import {
 export const SportList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps } = useTable({
         syncWithLocation: true,
-        hasPagination: false
     });
 
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="Id" />
-                <Table.Column dataIndex="nom" title="Nom" />
+                <Table.Column dataIndex="id" title="Id"
+                    sorter
+                />
+                <Table.Column dataIndex="nom" title="Nom"
+                    sorter
+                />
                 <Table.Column
                     dataIndex="nombreJoueurs"
                     title="Nombre Joueurs"
+                    sorter
                 />
                 <Table.Column
                     dataIndex="terrains"

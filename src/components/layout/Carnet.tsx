@@ -30,14 +30,13 @@ import Buy from "components/view/Buy";
 
 export const CarnetList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps } = useTable({
-        syncWithLocation: true,
-        hasPagination: false
+        syncWithLocation: true
     });
 
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="Id" />
+                <Table.Column dataIndex="id" title="Id" sorter />
                 <Table.Column dataIndex="username" title="Client"
                     render={(value)=><EmailField value={value}/>}
                 />
@@ -45,6 +44,7 @@ export const CarnetList: React.FC<IResourceComponentsProps> = () => {
                 <Table.Column
                     dataIndex="nombreEntrees"
                     title="Nombre Entrees"
+                    sorter
                     render={(value,record: BaseRecord)=><Buy value={value} record={record!} />}
                 />
                 <Table.Column

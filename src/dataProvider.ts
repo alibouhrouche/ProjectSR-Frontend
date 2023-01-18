@@ -1,9 +1,30 @@
 import axios, { AxiosResponse } from "axios";
 import type { BaseKey, DataProvider, HttpError, MetaDataQuery } from "@pankod/refine-core";
 import { TOKEN_KEY } from "authProvider";
+import QueryString from "query-string";
 import { CarnetCreate, MessageCreate, SportData, TerrainData, UserCreate } from "interfaces";
-
+import { CrudSorting } from "@pankod/refine-core";
+const { stringify } = QueryString
 const axiosInstance = axios.create();
+
+const generateSort = (sort?: CrudSorting) => {
+    if (sort && sort.length > 0) {
+        const _sort: string[] = [];
+        const _order: string[] = [];
+
+        sort.map((item) => {
+            _sort.push(item.field);
+            _order.push(item.order);
+        });
+
+        return {
+            _sort,
+            _order,
+        };
+    }
+
+    return;
+};
 
 const route:Record<string,string> = {
     "messages": "client/messages",
@@ -12,6 +33,7 @@ const route:Record<string,string> = {
     "sports": "client/sport",
     "users": "admin/users",
     "carnets": "admin/carnet",
+    "profile": "auth/currentUser"
 }
 
 const createMessage = async (apiurl:string,data:MessageCreate) => await axiosInstance.post(`${apiurl}/client/messages`,data.message,{
@@ -47,7 +69,9 @@ const updator:Record<string,(apiurl:string,data:any,id:BaseKey,metaData?:MetaDat
             id,
             nombreEntrees: data.nombreEntrees
         })
-    }
+    },
+    "users": async (apiurl,data) => await axiosInstance.put(`${apiurl}/admin/users`,data),
+    "profile":  async (apiurl,data) => await axiosInstance.put(`${apiurl}/client/profile`,data)
 }
 
 const defCreator = async () => null
@@ -79,13 +103,50 @@ axiosInstance.interceptors.response.use(
 
 const SimpleRestDataProvider = (apiurl: string):DataProvider => {
     return {
-        async getList({resource}){
+        async getList({resource, hasPagination, pagination = { current: 1, pageSize: 10 }, sort, filters}){
             const url = route[resource.toLowerCase()] ?? ""
-            const { data } = await axiosInstance.get(`${apiurl}/${url}`)
-            return {
-                data,
-                total: data.length
-            }
+            const { current = 1, pageSize = 10 } = pagination ?? {};
+
+            const queryFilters:Record<string,string> = {};
+
+            const query: {
+                _page?: number;
+                _size?: number;
+                _sort?: string;
+                _order?: string;
+            } = hasPagination
+                ? {
+                    _page: current,
+                    _size: pageSize,
+                }
+                : {};
+                const generatedSort = generateSort(sort);
+                if (generatedSort) {
+                    const { _sort, _order } = generatedSort;
+                    query._sort = _sort.join(",");
+                    query._order = _order.join(",");
+                }
+                if (filters) {
+                    filters.forEach((filter) => {
+                        if (filter.operator === "or" || filter.operator === "and") {
+                            throw new Error(
+                                `\`operator: ${filter.operator}\` is not supported.`,
+                            );
+                        }
+                        if ("field" in filter) {
+                            const { field, operator, value } = filter;
+                            if (operator === "eq") {
+                                queryFilters[field] = value;
+                            }
+                        }
+                    })
+                }
+                const { data, headers } = await axiosInstance.get(`${apiurl}/${url}?${stringify(query)}&${stringify(queryFilters)}`)
+                const total = +(headers["x-total-count"] ?? data.length);
+                return {
+                    data,
+                    total
+                }
         },
         async create({ resource, variables }){
             const c = creator[resource.toLowerCase()] ?? defCreator
@@ -102,10 +163,17 @@ const SimpleRestDataProvider = (apiurl: string):DataProvider => {
             }
         },
         async getOne({resource,id}){
-            const url = route[resource.toLowerCase()] ?? ""
-            const { data } = await axiosInstance.get(`${apiurl}/${url}/${id}`)
-            return {
-                data
+            if(resource === "Profile"){
+                const { data } = await axiosInstance.get(`${apiurl}/auth/currentUser`)
+                return {
+                    data
+                }
+            }else{
+                const url = route[resource.toLowerCase()] ?? ""
+                const { data } = await axiosInstance.get(`${apiurl}/${url}/${id}`)
+                return {
+                    data
+                }
             }
         },
         async deleteOne({id,resource}){

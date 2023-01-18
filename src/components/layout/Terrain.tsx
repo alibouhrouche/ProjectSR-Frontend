@@ -25,15 +25,19 @@ const SurfaceOptions = Object.entries(Surface).map(([k,v])=>({
 export const TerrainList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps } = useTable({
         syncWithLocation: true,
-        hasPagination: false
     });
 
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column dataIndex="id" title="Id" />
-                <Table.Column dataIndex="code" title="Code" />
-                <Table.Column dataIndex="surface" title="Surface" 
+                <Table.Column dataIndex="id" title="Id" 
+                    sorter
+                />
+                <Table.Column dataIndex="code" title="Code" 
+                    sorter
+                />
+                <Table.Column dataIndex="surface" title="Surface"
+                    sorter 
                     render={(value:string) => <TextField value={Surface[value] ?? value} />}
                 />
                 <Table.Column
