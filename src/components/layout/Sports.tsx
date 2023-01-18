@@ -13,6 +13,7 @@ import {
     Form,
     Input,useForm, Select, Typography, Show, NumberField, TextField, Create, useSelect, InputNumber
 } from "@pankod/refine-antd";
+import { Sport, Terrain } from "interfaces";
 
 export const SportList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps } = useTable({
@@ -73,15 +74,18 @@ export const SportList: React.FC<IResourceComponentsProps> = () => {
 };
 
 export const SportEdit: React.FC<IResourceComponentsProps> = () => {
-    const { formProps, saveButtonProps, queryResult } = useForm();
+    const { formProps, saveButtonProps, queryResult } = useForm<Sport>();
 
     const sportsData = queryResult?.data?.data;
 
-    const { selectProps: terrainSelectProps } = useSelect({
+    const { selectProps: terrainSelectProps } = useSelect<Terrain>({
         resource: "Terrain",
         defaultValue: sportsData?.terrains,
         optionLabel: "code",
         optionValue: "code",
+        defaultValueQueryOptions: {
+            enabled: false,
+        }
     })
 
     return (
